@@ -1,0 +1,170 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  password   String
+  role       Role      @default(user)
+  contactNo  String
+  address    String
+  profileImg String[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  bookings   Booking[]
+  reviews    Review[]
+
+  @@map("users")
+}
+
+model Service {
+  id            String      @id @default(uuid())
+  name          String      @unique
+  description   String?
+  price         Int
+  location      String
+  availbility   Availbility
+  serviceImg    String[]
+  duration      String?
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  averageRating Float?
+  totalReviews  Int?
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  reviews       Review[]
+  bookings      Booking[]
+
+  @@map("services")
+}
+
+model Booking {
+  id          String    @id @default(uuid())
+  bookingDate String    @map("booking_date")
+  status      Status    @default(pending)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  userId      String    @map("patient_id")
+  serviceId   String    @map("service_id")
+  slotId      String    @map("slot_id")
+  isPaid      Boolean   @default(false)
+  user        User      @relation(fields: [userId], references: [id])
+  service     Service   @relation(fields: [serviceId], references: [id])
+  slot        TimeSlots @relation(fields: [slotId], references: [id])
+
+  @@unique([slotId, serviceId, bookingDate])
+  @@map("bookings")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  title       String    @unique
+  categoryImg String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  services    Service[]
+
+  @@map("categories")
+}
+
+model Payment {
+  id     String @id @default(uuid())
+  amount Int
+  userId String
+
+  bookingId String
+
+  status             PaymentStatus @default(PANDING)
+  transactionId      String
+  paymentGatewayData Json?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@map("payment")
+}
+
+model TimeSlots {
+  id        String @id @default(uuid())
+  startTime String @unique @map("start_time")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  bookings Booking[]
+
+  @@map("time_slots")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  serviceId String
+  rating    Float
+  comment   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+
+  @@map("reviews")
+}
+
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model Blog {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  blogImg   String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  email     String
+  feedback  String
+}
+
+enum Role {
+  super_admin
+  admin
+  user
+}
+
+enum Status {
+  pending
+  confirmed
+}
+
+enum Availbility {
+  upcoming
+  available
+}
+
+enum PaymentStatus {
+  PANDING
+  PAID
+}
