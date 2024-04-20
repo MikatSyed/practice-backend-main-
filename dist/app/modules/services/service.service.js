@@ -194,6 +194,81 @@ const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, fun
         data: servicesWithStatistics,
     };
 });
+const getOverview = () => __awaiter(void 0, void 0, void 0, function* () {
+    // Fetch total number of services
+    const totalServices = yield prisma_1.default.service.count();
+    // Fetch total number of bookings
+    const totalBookings = yield prisma_1.default.booking.count();
+    // Fetch total earnings (sum of payment table amount)
+    const earningsData = yield prisma_1.default.payment.aggregate({
+        _sum: {
+            amount: true,
+        },
+        _count: true,
+    });
+    const totalEarnings = {
+        amount: earningsData._sum.amount || 0,
+        totalPayment: earningsData._count || 0,
+    };
+    const today = new Date();
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const payments = yield prisma_1.default.payment.groupBy({
+        by: ['createdAt'],
+        where: {
+            createdAt: {
+                gte: sevenDaysAgo,
+            },
+        },
+        _sum: {
+            amount: true,
+        },
+    });
+    const sumByDay = {};
+    payments.forEach((payment) => {
+        const day = new Date(payment.createdAt).toLocaleDateString('en-US', { weekday: 'short' });
+        if (sumByDay[day]) {
+            sumByDay[day] += payment._sum.amount;
+        }
+        else {
+            sumByDay[day] = payment._sum.amount;
+        }
+    });
+    // Fill in missing days with zero earnings
+    const formattedRevenueData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => ({
+        name: day,
+        earning: sumByDay[day] || 0,
+    }));
+    const categoryServiceCounts = yield prisma_1.default.category.findMany({
+        select: {
+            title: true,
+            _count: {
+                select: {
+                    services: true,
+                },
+            },
+        },
+    });
+    const formattedCategoryServiceCounts = categoryServiceCounts.map(category => ({
+        name: category.title,
+        totalServices: category._count.services,
+    }));
+    // Fetch total number of providers (users with role "provider")
+    const totalProviders = yield prisma_1.default.user.count({
+        where: {
+            role: 'admin',
+        },
+    });
+    return {
+        totalBookings,
+        totalEarnings,
+        formattedRevenueData,
+        formattedCategoryServiceCounts,
+        totalServices: {
+            service: totalServices,
+            provider: totalProviders,
+        },
+    };
+});
 const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const isserviceExist = yield prisma_1.default.service.findFirst({
         where: {
@@ -302,4 +377,5 @@ exports.ServiceServices = {
     getByIdFromDB,
     updateOneInDB,
     deleteByIdFromDB,
+    getOverview
 };

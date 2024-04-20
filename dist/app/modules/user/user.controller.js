@@ -17,6 +17,16 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const user_service_1 = require("./user.service");
+const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_service_1.UserService.createUser(req.body);
+    delete result.password;
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        statusCode: http_status_1.default.OK,
+        message: 'User created successfully!',
+        data: result,
+    });
+}));
 const getAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_service_1.UserService.getAllFromDB();
     (0, sendResponse_1.default)(res, {
@@ -57,6 +67,7 @@ const deleteByIdFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 exports.UserController = {
+    createUser,
     getAllUsers,
     getByIdFromDB,
     updateOneInDB,

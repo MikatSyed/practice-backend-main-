@@ -6,6 +6,10 @@ import { ServiceController } from './service.controller';
 import { ServiceValidation } from './services.validate';
 
 const router = express.Router();
+
+
+
+router.get('/overview', ServiceController.getOverview);
 router.post(
   '/',
   validateRequest(ServiceValidation.createServiceZodSchema),
@@ -18,6 +22,7 @@ router.get('/', ServiceController.getAllFromDB);
 // router.get('/:categoryId/category', BookController.getByCategoryIdFromDB);
 
 router.get('/:id', ServiceController.getByIdFromDB);
+
 
 router.patch(
   '/:id',

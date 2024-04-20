@@ -11,6 +11,7 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const service_controller_1 = require("./service.controller");
 const services_validate_1 = require("./services.validate");
 const router = express_1.default.Router();
+router.get('/overview', service_controller_1.ServiceController.getOverview);
 router.post('/', (0, validateRequest_1.default)(services_validate_1.ServiceValidation.createServiceZodSchema), (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN, user_1.ENUM_USER_ROLE.SUPER_ADMIN), service_controller_1.ServiceController.insertIntoDB);
 router.get('/', service_controller_1.ServiceController.getAllFromDB);
 // router.get('/:categoryId/category', BookController.getByCategoryIdFromDB);

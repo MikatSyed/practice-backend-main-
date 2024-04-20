@@ -17,10 +17,13 @@ const initPayment = async (req: Request, res: Response) => {
 };
 
 const paymentVerify = async (req: Request, res: Response) => {
-  const { transactionId } = req.query;
 
-  const result = await PaymentService.paymentVerify(transactionId);
-  console.log(result?.transactionId, 'aaaaa');
+  const  id  = req.query;
+  let {transectionId} = id;
+  
+
+  const result = await PaymentService.paymentVerify(transectionId);
+  console.log(result, 'aaaaa');
   // Check if the update was successful
   if (result && result.count > 0) {
     // Send a success response
@@ -33,7 +36,7 @@ const paymentVerify = async (req: Request, res: Response) => {
 
     // Redirect after sending the response
     res.redirect(
-      `https://home-crafter-mikatsyed.vercel.app/success?transactionId=${result?.transactionId}`
+      `http://localhost:3000/success?transactionId=${transectionId}`
     );
   } else {
     // Handle the case where the update failed

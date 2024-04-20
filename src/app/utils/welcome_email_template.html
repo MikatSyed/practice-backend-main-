@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Home Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 200px;
+        }
+        h1 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666666;
+            margin-bottom: 20px;
+        }
+        .credentials {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .credentials p {
+            margin: 10px 0;
+        }
+        .login-button {
+            text-align: center;
+        }
+        .login-button a {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <!-- <img src="https://i.postimg.cc/9fgTx5Cg/hrm-with-bg.png" alt="HRM Logo"> -->
+        </div>
+        <h1>Welcome to Home Service</h1>
+        <p>Your login details are:</p>
+        <div class="credentials">
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Password:</strong> {{ password }}</p>
+        </div>
+        <div class="login-button">
+            <a href="https://example.com/login" target="_blank">Click Here to Login</a>
+        </div>
+        <p>Yours truly,<br>Home Service Team</p>
+    </div>
+</body>
+</html>

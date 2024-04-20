@@ -120,8 +120,37 @@ const RefreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
         token: newAccessToken,
     };
 });
+const changePassword = (payload, id) => __awaiter(void 0, void 0, void 0, function* () {
+    const { oldPassword, newPassword } = payload;
+    // Check if user exists
+    const isUserExist = yield prisma_1.default.user.findUnique({
+        where: {
+            id: id,
+        },
+    });
+    if (!isUserExist) {
+        throw new Error('User does not exist');
+    }
+    // Checking old password
+    if (isUserExist.password &&
+        !(yield bcrypt_1.default.compare(oldPassword, isUserExist.password))) {
+        throw new Error('Old Password is incorrect');
+    }
+    // Hash the new password
+    const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10); // You can adjust the salt rounds as needed
+    // Update user password
+    yield prisma_1.default.user.update({
+        where: {
+            id: id,
+        },
+        data: {
+            password: hashedPassword, // Update only the password field with the new hashed password
+        },
+    });
+});
 exports.AuthService = {
     Signup,
     LoginUser,
     RefreshToken,
+    changePassword
 };

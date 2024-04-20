@@ -208,6 +208,99 @@ const getAllFromDB = async (
   };
 };
 
+
+const getOverview = async (): Promise<any> => {
+  // Fetch total number of services
+  const totalServices = await prisma.service.count();
+
+  // Fetch total number of bookings
+  const totalBookings = await prisma.booking.count();
+
+  // Fetch total earnings (sum of payment table amount)
+  const earningsData = await prisma.payment.aggregate({
+    _sum: {
+      amount: true,
+    },
+    _count: true,
+  });
+  const totalEarnings = {
+    amount: earningsData._sum.amount || 0,
+    totalPayment: earningsData._count || 0,
+  };
+
+
+
+  const today = new Date();
+  const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  
+  const payments = await prisma.payment.groupBy({
+      by: ['createdAt'],
+      where: {
+          createdAt: {
+              gte: sevenDaysAgo,
+          },
+      },
+      _sum: {
+          amount: true,
+      },
+  });
+  
+  const sumByDay: any = {};
+  
+  payments.forEach((payment: any) => {
+      const day = new Date(payment.createdAt).toLocaleDateString('en-US', { weekday: 'short' });
+      if (sumByDay[day]) {
+          sumByDay[day] += payment._sum.amount;
+      } else {
+          sumByDay[day] = payment._sum.amount;
+      }
+  });
+  
+  // Fill in missing days with zero earnings
+  const formattedRevenueData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => ({
+      name: day,
+      earning: sumByDay[day] || 0,
+  }));
+
+  const categoryServiceCounts = await prisma.category.findMany({
+    select: {
+      title: true,
+      _count: {
+        select: {
+          services: true,
+        },
+      },
+    },
+  });
+  
+  const formattedCategoryServiceCounts = categoryServiceCounts.map(category => ({
+    name: category.title,
+    totalServices: category._count.services,
+  }));
+
+  // Fetch total number of providers (users with role "provider")
+  const totalProviders = await prisma.user.count({
+    where: {
+      role: 'admin',
+    },
+  });
+
+  return {
+    
+    totalBookings,
+    totalEarnings,
+    formattedRevenueData,
+    formattedCategoryServiceCounts,
+    totalServices: {
+      service: totalServices,
+      provider: totalProviders,
+    },
+  };
+};
+
+
+
+
 const getByIdFromDB = async (id: string): Promise<Service | null> => {
   const isserviceExist = await prisma.service.findFirst({
     where: {
@@ -345,4 +438,5 @@ export const ServiceServices = {
   getByIdFromDB,
   updateOneInDB,
   deleteByIdFromDB,
+  getOverview
 };

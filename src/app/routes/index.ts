@@ -59,10 +59,10 @@ const moduleRoutes = [
     path: '/feedback',
     route: FeedbackRoutes,
   },
-  // {
-  //   path: '/payment',
-  //   route: paymentRoutes,
-  // },
+  {
+    path: '/payment',
+    route: paymentRoutes,
+  },
 ];
 
 moduleRoutes.forEach(route => router.use(route.path, route.route));

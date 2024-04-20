@@ -19,7 +19,7 @@ const initPayment = async (data: any) => {
 
   const transactionId = generateSixDigitId();
 
-  console.log(data);
+  console.log(data,'22');
   const paymentSession = await sslService.initPayment({
     total_amount: data.amount,
     tran_id: transactionId,
@@ -57,9 +57,10 @@ const initPayment = async (data: any) => {
 // };
 
 const paymentVerify = async (id: any): Promise<any> => {
+  console.log(id,'ssss');
   const isPaymentExist = await prisma.payment.findFirst({
     where: {
-      id,
+      transactionId: id,
     },
   });
 

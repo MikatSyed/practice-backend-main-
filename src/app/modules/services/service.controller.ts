@@ -69,6 +69,17 @@ const deleteByIdFromDB: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const getOverview: RequestHandler = catchAsync(async (req, res) => {
+  const result = await ServiceServices.getOverview();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'overview fetched successfully',
+    data: result,
+  });
+});
+
 export const ServiceController = {
   insertIntoDB,
   getAllFromDB,
@@ -76,4 +87,5 @@ export const ServiceController = {
   getByIdFromDB,
   updateOneInDB,
   deleteByIdFromDB,
+  getOverview
 };

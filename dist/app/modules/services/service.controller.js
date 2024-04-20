@@ -72,6 +72,15 @@ const deleteByIdFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         data: result,
     });
 }));
+const getOverview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield service_service_1.ServiceServices.getOverview();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'overview fetched successfully',
+        data: result,
+    });
+}));
 exports.ServiceController = {
     insertIntoDB,
     getAllFromDB,
@@ -79,4 +88,5 @@ exports.ServiceController = {
     getByIdFromDB,
     updateOneInDB,
     deleteByIdFromDB,
+    getOverview
 };

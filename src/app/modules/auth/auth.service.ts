@@ -157,8 +157,49 @@ const RefreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     token: newAccessToken,
   };
 };
+
+const changePassword = async (
+  payload: any,
+  id: string
+): Promise<void> => {
+  const { oldPassword, newPassword } = payload;
+
+  // Check if user exists
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new Error('User does not exist');
+  }
+
+  // Checking old password
+  if (
+    isUserExist.password &&
+    !(await bcrypt.compare(oldPassword, isUserExist.password))
+  ) {
+    throw new Error('Old Password is incorrect');
+  }
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10); // You can adjust the salt rounds as needed
+
+  // Update user password
+  await prisma.user.update({
+    where: {
+      id: id,
+    },
+    data: {
+      password: hashedPassword, // Update only the password field with the new hashed password
+    },
+  });
+};
+
 export const AuthService = {
   Signup,
   LoginUser,
   RefreshToken,
+  changePassword
 };

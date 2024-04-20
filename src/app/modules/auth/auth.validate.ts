@@ -19,6 +19,9 @@ const signupZodSchema = z.object({
     contactNo: z.string({
       required_error: 'ContactNo is required',
     }),
+    profileImg: z.string({
+      required_error: 'profileImg is required',
+    }),
   }),
 });
 
@@ -41,8 +44,20 @@ const refreshTokenZodSchema = z.object({
   }),
 });
 
+const changePasswordZodSchema = z.object({
+  body: z.object({
+    newPassword: z.string({
+      required_error: 'New password is required',
+    }),
+    oldPassword: z.string({
+      required_error: 'Old password is required',
+    }),
+  }),
+});
+
 export const AuthValidation = {
   signupZodSchema,
   loginZodSchema,
   refreshTokenZodSchema,
+  changePasswordZodSchema
 };

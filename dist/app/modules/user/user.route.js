@@ -10,8 +10,10 @@ const auth_1 = __importDefault(require("../../middlewares/auth"));
 const user_1 = require("../../../enums/user");
 const validateRequest_1 = __importDefault(require("../../middlewares/validateRequest"));
 const user_validate_1 = require("./user.validate");
+const auth_validate_1 = require("../auth/auth.validate");
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 const router = express_1.default.Router();
+router.post('/create', (0, validateRequest_1.default)(auth_validate_1.AuthValidation.signupZodSchema), user_controller_1.UserController.createUser);
 router.get('/', (0, auth_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), user_controller_1.UserController.getAllUsers);
 router.get('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.USER, user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), user_controller_1.UserController.getByIdFromDB);
 router.patch('/:id', (0, validateRequest_1.default)(user_validate_1.UserValidation.userUpdateZodSchema), (0, auth_1.default)(user_1.ENUM_USER_ROLE.USER, user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), user_controller_1.UserController.updateOneInDB);

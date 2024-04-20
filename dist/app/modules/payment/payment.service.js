@@ -40,7 +40,7 @@ const initPayment = (data) => __awaiter(void 0, void 0, void 0, function* () {
         return sixDigitIdString;
     }
     const transactionId = generateSixDigitId();
-    console.log(data);
+    console.log(data, '22');
     const paymentSession = yield ssl_service_1.sslService.initPayment({
         total_amount: data.amount,
         tran_id: transactionId,
@@ -74,9 +74,10 @@ const initPayment = (data) => __awaiter(void 0, void 0, void 0, function* () {
 //   return result;
 // };
 const paymentVerify = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(id, 'ssss');
     const isPaymentExist = yield prisma_1.default.payment.findFirst({
         where: {
-            id,
+            transactionId: id,
         },
     });
     if (!isPaymentExist) {

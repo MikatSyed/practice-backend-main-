@@ -28,9 +28,10 @@ const initPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     });
 });
 const paymentVerify = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { transactionId } = req.query;
-    const result = yield payment_service_1.PaymentService.paymentVerify(transactionId);
-    console.log(result === null || result === void 0 ? void 0 : result.transactionId, 'aaaaa');
+    const id = req.query;
+    let { transectionId } = id;
+    const result = yield payment_service_1.PaymentService.paymentVerify(transectionId);
+    console.log(result, 'aaaaa');
     // Check if the update was successful
     if (result && result.count > 0) {
         // Send a success response
@@ -41,7 +42,7 @@ const paymentVerify = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //   data: result,
         // });
         // Redirect after sending the response
-        res.redirect(`https://home-crafter-mikatsyed.vercel.app/success?transactionId=${result === null || result === void 0 ? void 0 : result.transactionId}`);
+        res.redirect(`http://localhost:3000/success?transactionId=${transectionId}`);
     }
     else {
         // Handle the case where the update failed

@@ -4,6 +4,20 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { UserService } from './user.service';
 
+
+const createUser: RequestHandler = catchAsync(async (req, res) => {
+  const result = await UserService.createUser(req.body);
+  delete result.password;
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User created successfully!',
+    data: result,
+  });
+});
+
+
 const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
   const result = await UserService.getAllFromDB();
 
@@ -52,6 +66,7 @@ const deleteByIdFromDB: RequestHandler = catchAsync(async (req, res) => {
 });
 
 export const UserController = {
+  createUser,
   getAllUsers,
   getByIdFromDB,
   updateOneInDB,

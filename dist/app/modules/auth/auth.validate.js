@@ -21,6 +21,9 @@ const signupZodSchema = zod_1.z.object({
         contactNo: zod_1.z.string({
             required_error: 'ContactNo is required',
         }),
+        profileImg: zod_1.z.string({
+            required_error: 'profileImg is required',
+        }),
     }),
 });
 const loginZodSchema = zod_1.z.object({
@@ -40,8 +43,19 @@ const refreshTokenZodSchema = zod_1.z.object({
         }),
     }),
 });
+const changePasswordZodSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        newPassword: zod_1.z.string({
+            required_error: 'New password is required',
+        }),
+        oldPassword: zod_1.z.string({
+            required_error: 'Old password is required',
+        }),
+    }),
+});
 exports.AuthValidation = {
     signupZodSchema,
     loginZodSchema,
     refreshTokenZodSchema,
+    changePasswordZodSchema
 };

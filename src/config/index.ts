@@ -23,4 +23,10 @@ export default {
     sslPaymentUrl: process.env.SSL_BASE_PAYMENT_URL,
     sslValidationUrl: process.env.SSL_BASE_VALIDATION_URL,
   },
+  email: process.env.Email,
+  SMTP_PRODUCT: process.env.SMTP_PRODUCT,
+  SMTP_MAIL:process.env.SMTP_MAIL,
+  SMTP_PASSWORD : process.env.SMTP_PASSWORD,
+  SMTP_HOST : process.env.SMTP_HOST,
+  SMTP_PORT : process.env.SMTP_PORT
 };
